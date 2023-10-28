@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group
+        android:id="@+id/group3"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_mods"
+            android:checked="true"
+            android:icon="@drawable/ic_mods"
+            android:title="@string/mods" />
+        <item
+            android:id="@+id/nav_maps"
+            android:checked="true"
+            android:icon="@drawable/ic_maps"
+            android:title="@string/maps" />
+        <item
+            android:id="@+id/nav_full"
+            android:checked="true"
+            android:icon="@drawable/ic_list_svgrepo_com"
+            android:title="@string/show_all" />
+    </group>
+    <group android:id="@+id/group2">
+        <item
+            android:id="@+id/nav_write"
+            android:checkable="false"
+            android:icon="@drawable/ic_envelope_svgrepo_com"
+            android:title="@string/write" />
+        <item
+            android:id="@+id/nav_share"
+            android:checkable="false"
+            android:icon="@drawable/ic_share_svgrepo_com"
+            android:title="@string/share" />
+        <item
+            android:id="@+id/nav_rate"
+            android:checkable="false"
+            android:icon="@drawable/ic_star_favorite_svgrepo_com"
+            android:title="@string/rate" />
+        <item
+            android:id="@+id/nav_sub"
+            android:checkable="false"
+            android:icon="@drawable/round_attach_money_24"
+            android:title="Become Pro" />
+    </group>
+</menu>

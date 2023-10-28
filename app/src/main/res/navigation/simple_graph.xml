@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/simple_graph"
+    app:startDestination="@+id/menu_item_graph">
+    <test
+        android:id="@+id/menu_item2"
+        android:name="androidx.navigation.ui.androidTest.EmptyFragment" />
+    <include app:graph="@navigation/menu_item_graph" />
+</navigation>

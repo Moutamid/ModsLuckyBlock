@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/menu_item_graph"
+    app:startDestination="@+id/itemHome">
+    <test
+        android:id="@+id/itemHome"
+        android:name="androidx.navigation.ui.androidTest.EmptyFragment">
+        <action
+            android:id="@+id/itemHome_to_itemSecondDestination"
+            app:destination="@+id/itemSecondDestination" />
+    </test>
+    <test
+        android:id="@+id/itemSecondDestination"
+        android:name="androidx.navigation.ui.androidTest.EmptyFragment" />
+</navigation>
