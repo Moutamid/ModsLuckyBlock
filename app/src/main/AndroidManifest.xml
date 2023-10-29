@@ -85,7 +85,7 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
-        <meta-data
+        <meta-data tools:replace="android:value"
             android:name="applovin.sdk.key"
             android:value="i7eIcyg1WaMWa3MQxTTdZ_m3SRsW64U6lMqiHkhToV_Eou_8_O1WcuX7tT9HXrlTT4zXKKuzO2VhderQ4uOqh1" />
     </application>

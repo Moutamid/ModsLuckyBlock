@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.SpannableString;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,6 +22,7 @@ import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
@@ -41,6 +43,11 @@ import com.google.android.gms.measurement.api.AppMeasurementSdk;
 import com.google.android.material.navigation.NavigationView;
 import com.marcoscg.ratedialog.RateDialog;
 import com.smarteist.autoimageslider.SliderView;
+import com.yodo1.mas.Yodo1Mas;
+import com.yodo1.mas.error.Yodo1MasError;
+import com.yodo1.mas.event.Yodo1MasAdEvent;
+import com.yodo1.mas.interstitial.Yodo1MasInterstitialAd;
+
 import es.dmoral.toasty.Toasty;
 
 import java.io.IOException;
@@ -114,7 +121,46 @@ public class MainActivity extends AppCompatActivity implements MapsAdapter.OnCar
         setMaps();
         initRateDialog();
         this.mInterstitialAd = ApplicationManager.getInstance().getInterAd();
-        ApplicationManager.getInstance().LoadIntersttialAd();
+//        ApplicationManager.getInstance().LoadIntersttialAd();
+
+        loadYodoInter();
+
+    }
+
+    private void loadYodoInter() {
+        Yodo1Mas.getInstance().setCOPPA(false);
+        Yodo1Mas.getInstance().setGDPR(true);
+        Yodo1Mas.getInstance().setCCPA(false);
+        Yodo1Mas.getInstance().initMas(this, "YourAppKey", new Yodo1Mas.InitListener() {
+            @Override
+            public void onMasInitSuccessful() {
+                Log.d("ADCHECKER", "onMasInitSuccessful: ");
+            }
+
+            @Override
+            public void onMasInitFailed(@NonNull Yodo1MasError error) {
+                Log.d("ADCHECKER", "onMasInitFailed: " + error.getMessage());
+            }
+        });
+
+        Yodo1Mas.getInstance().setInterstitialListener(new Yodo1Mas.InterstitialListener() {
+            @Override
+            public void onAdOpened(@NonNull Yodo1MasAdEvent event) {
+                super.onAdOpened(event);
+            }
+
+            @Override
+            public void onAdClosed(@NonNull Yodo1MasAdEvent event) {
+                super.onAdClosed(event);
+            }
+
+            @Override
+            public void onAdError(@NonNull Yodo1MasAdEvent event, @NonNull Yodo1MasError error) {
+                super.onAdError(event, error);
+            }
+        });
+
+        Yodo1MasInterstitialAd.getInstance().loadAd(MainActivity.this);
     }
 
     @Override
@@ -361,15 +407,15 @@ public class MainActivity extends AppCompatActivity implements MapsAdapter.OnCar
 
     public void setModLists() {
         this.mapList = new ArrayList();
-        MapsAdapter mapsAdapter = new MapsAdapter(this, this.mapList);
+        MapsAdapter mapsAdapter = new MapsAdapter(this,this, this.mapList);
         this.mapsAdapter = mapsAdapter;
         mapsAdapter.setOnCardClickListener(this);
         this.modList = new ArrayList();
-        MapsAdapter mapsAdapter2 = new MapsAdapter(this, this.modList);
+        MapsAdapter mapsAdapter2 = new MapsAdapter(this, this, this.modList);
         this.modsAdapter = mapsAdapter2;
         mapsAdapter2.setOnCardClickListener(this);
         this.fullList = new ArrayList();
-        MapsAdapter mapsAdapter3 = new MapsAdapter(this, this.fullList);
+        MapsAdapter mapsAdapter3 = new MapsAdapter(this, this, this.fullList);
         this.fullAdapter = mapsAdapter3;
         mapsAdapter3.setOnCardClickListener(this);
     }

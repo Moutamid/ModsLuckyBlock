@@ -10,6 +10,8 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.OnLifecycleEvent;
@@ -30,6 +32,9 @@ import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.google.android.gms.ads.nativead.MediaView;
 import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.android.gms.ads.nativead.NativeAdView;
+import com.yodo1.mas.Yodo1Mas;
+import com.yodo1.mas.error.Yodo1MasError;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -68,14 +73,16 @@ public class ApplicationManager extends android.app.Application implements Lifec
     public void onCreate() {
         super.onCreate();
         mInstance = this;
-        MobileAds.initialize(this, new OnInitializationCompleteListener() { 
-            @Override 
+        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+            @Override
             public void onInitializationComplete(InitializationStatus initializationStatus) {
             }
         });
         ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
         preloadMainNative();
     }
+
+
     public void LoadIntersttialAd(){
         InterstitialAd.load(this, getResources().getString(R.string.admob_interstitial), new AdRequest.Builder().build(), new InterstitialAdLoadCallback() { 
             @Override 

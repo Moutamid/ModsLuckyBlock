@@ -1,5 +1,6 @@
 package com.lucky.blocks.mods.mcpeaddons;
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,6 +17,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.android.gms.ads.nativead.NativeAdView;
+import com.yodo1.mas.Yodo1Mas;
+import com.yodo1.mas.interstitial.Yodo1MasInterstitialAd;
 
 import java.util.List;
 
@@ -27,12 +30,14 @@ public class MapsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static OnCardClickListener mListener;
     private String ADMOB_AD_UNIT_ID;
     private Context mContext;
+    private Activity activty;
     private List<Map> mapList;
     private NativeAd nativeAd;
 
-    public MapsAdapter(Context context, List<Map> list) {
-        this.mContext = context;
-        this.mapList = list;
+    public MapsAdapter(Context mContext, Activity activty, List<Map> mapList) {
+        this.mContext = mContext;
+        this.activty = activty;
+        this.mapList = mapList;
     }
 
     @Override
@@ -119,7 +124,12 @@ public class MapsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         @Override
         public void onClick(View view) {
             MapsAdapter.mListener.onCardClick(view, getAdapterPosition());
-            ApplicationManager.getInstance().ShowInterstitialAd();
+//            ApplicationManager.getInstance().ShowInterstitialAd();
+
+//            Yodo1Mas.getInstance().showInterstitialAd(activty);
+            boolean isLoaded = Yodo1MasInterstitialAd.getInstance().isLoaded();
+            Log.d("ADCHECKER", "isLoaded: " + isLoaded);
+            if(isLoaded) Yodo1MasInterstitialAd.getInstance().showAd(activty, "YourAppKey");
         }
     }
 
