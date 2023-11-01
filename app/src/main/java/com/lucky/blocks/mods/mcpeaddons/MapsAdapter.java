@@ -19,6 +19,7 @@ import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.android.gms.ads.nativead.NativeAdView;
 import com.yodo1.mas.Yodo1Mas;
 import com.yodo1.mas.interstitial.Yodo1MasInterstitialAd;
+import com.yodo1.mas.nativeads.Yodo1MasNativeAdView;
 
 import java.util.List;
 
@@ -49,9 +50,9 @@ public class MapsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         mListener = onCardClickListener;
     }
     class adViewHolder extends RecyclerView.ViewHolder {
-        NativeAdView adView;
+        Yodo1MasNativeAdView adView;
 
-        public adViewHolder(NativeAdView nativeAdView) {
+        public adViewHolder(Yodo1MasNativeAdView nativeAdView) {
             super(nativeAdView);
             this.adView = nativeAdView;
         }
@@ -62,7 +63,7 @@ public class MapsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         if (i != 1) {
             return new contentViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_card, viewGroup, false));
         }
-        return new adViewHolder((NativeAdView) LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.ad_unified_bold, viewGroup, false));
+        return new adViewHolder((Yodo1MasNativeAdView) LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.yodo_native_adview, viewGroup, false));
     }
 
 
@@ -74,15 +75,15 @@ public class MapsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             contentviewholder.title.setText(map.getName());
             contentviewholder.views.setText(map.getViews());
             contentviewholder.downloads.setText(map.getDownloads());
-            contentviewholder.rating.setText(map.getRatingText());
+            contentviewholder.rating.setText(map.getRating()+"");
             if (map.getVersion().equals("null") || map.getVersion().trim().length() == 0) {
                 contentviewholder.version.setText(this.mContext.getResources().getString(R.string.no_version));
             } else {
                 contentviewholder.version.setText(map.getVersion());
             }
-            Glide.with(this.mContext).load(map.getThumbnail()).thumbnail(Glide.with(this.mContext).load(Integer.valueOf((int) R.drawable.spinner))).fitCenter().transition(DrawableTransitionOptions.withCrossFade()).into(contentviewholder.thumbnail);
+            Glide.with(this.mContext).load(map.getImage()).thumbnail(Glide.with(this.mContext).load(Integer.valueOf((int) R.drawable.spinner))).fitCenter().transition(DrawableTransitionOptions.withCrossFade()).into(contentviewholder.thumbnail);
         } else if (getItemViewType(i) == 1) {
-            ApplicationManager.getInstance().loadAd(null, ((adViewHolder) viewHolder).adView, 0);
+            ApplicationManager.getInstance().loadNativeYODO(null, ((adViewHolder) viewHolder).adView);
         }
     }
 

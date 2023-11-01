@@ -1,123 +1,133 @@
 package com.lucky.blocks.mods.mcpeaddons;
 
 public class Map {
-    private String archive_name;
-    private String description;
-    private String downloads;
-    private int id;
-    private String name;
-    private float rating;
-    private String ratingText;
-    private int sort;
-    private String thumbnail;
-    private String type;
-    private int unSort;
-    private String url;
-    private String version;
-    private String views;
+    int app_id, id;
+    String archive, description, downloads, image, name;
+    double rating;
+    int sort, unSort;
+    String type, version;
+    int views;
 
-    public Map(int i, String str, String str2, String str3, String str4, String str5, String str6, float f, String str7, String str8, String str9, String str10, int i2, int i3) {
-        this.id = i;
-        this.name = str;
-        this.views = str6;
-        this.description = str2;
-        this.thumbnail = str4;
-        this.url = str3;
-        this.archive_name = str5;
-        this.rating = f;
-        this.version = str7;
-        this.downloads = str8;
-        this.ratingText = str9;
-        this.type = str10;
-        this.sort = i2;
-        this.unSort = i3;
+    public Map() {
     }
 
-    public String getName() {
-        return this.name;
+    public Map(int app_id, int id, String archive, String description, String downloads, String image, String name, double rating, int sort, int unSort, String type, String version, int views) {
+        this.app_id = app_id;
+        this.id = id;
+        this.archive = archive;
+        this.description = description;
+        this.downloads = downloads;
+        this.image = image;
+        this.name = name;
+        this.rating = rating;
+        this.sort = sort;
+        this.unSort = unSort;
+        this.type = type;
+        this.version = version;
+        this.views = views;
     }
 
-    public void setName(String str) {
-        this.name = str;
+    public int getApp_id() {
+        return app_id;
     }
 
-    public String getViews() {
-        return this.views;
+    public void setApp_id(int app_id) {
+        this.app_id = app_id;
     }
 
     public int getId() {
-        return this.id;
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getArchive() {
+        return archive;
+    }
+
+    public void setArchive(String archive) {
+        this.archive = archive;
     }
 
     public String getDescription() {
-        return this.description;
+        return description;
     }
 
-    public String getUrl() {
-        return this.url;
-    }
-
-    public String getArchiveName() {
-        return this.archive_name;
-    }
-
-    public String getThumbnail() {
-        return this.thumbnail;
-    }
-
-    public void setThumbnail(String str) {
-        this.thumbnail = str;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getDownloads() {
-        return this.downloads;
+        return downloads;
     }
 
-    public void setDownloads(String str) {
-        this.downloads = str;
+    public void setDownloads(String downloads) {
+        this.downloads = downloads;
     }
 
-    public float getRating() {
-        return this.rating;
+    public String getImage() {
+        return image;
     }
 
-    public void setRating(float f) {
-        this.rating = f;
+    public void setImage(String image) {
+        this.image = image;
     }
 
-    public String getVersion() {
-        return this.version;
+    public String getName() {
+        return name;
     }
 
-    public void setVersion(String str) {
-        this.version = str;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getRatingText() {
-        return this.ratingText;
+    public double getRating() {
+        return rating;
     }
 
-    public void setRatingText(String str) {
-        this.ratingText = str;
-    }
-
-    public String getType() {
-        return this.type;
+    public void setRating(double rating) {
+        this.rating = rating;
     }
 
     public int getSort() {
-        return this.sort;
+        return sort;
     }
 
-    public void setSort(int i) {
-        this.sort = i;
+    public void setSort(int sort) {
+        this.sort = sort;
     }
 
     public int getUnSort() {
-        return this.unSort;
+        return unSort;
     }
 
-    public void setUnSort(int i) {
-        this.unSort = i;
+    public void setUnSort(int unSort) {
+        this.unSort = unSort;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public int getViews() {
+        return views;
+    }
+
+    public void setViews(int views) {
+        this.views = views;
     }
 }

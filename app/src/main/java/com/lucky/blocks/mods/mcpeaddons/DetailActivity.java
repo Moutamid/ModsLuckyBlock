@@ -28,6 +28,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.load.Key;
 import com.coolerfall.download.DownloadManager;
+import com.fxn.stash.Stash;
 import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.android.gms.ads.nativead.NativeAdView;
 import com.google.android.gms.common.internal.ImagesContract;
@@ -36,6 +37,8 @@ import com.kobakei.ratethisapp.RateThisApp;
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType;
 import com.smarteist.autoimageslider.SliderAnimations;
 import com.smarteist.autoimageslider.SliderView;
+import com.yodo1.mas.nativeads.Yodo1MasNativeAdView;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -72,8 +75,8 @@ public class DetailActivity extends AppCompatActivity implements AppsAdapter.OnC
     FrameLayout frameLayoutPopUp;
     String lang;
     TextView mapName;
-    NativeAdView nativeAdView;
-    NativeAdView nativeAdViewPopUp;
+    Yodo1MasNativeAdView nativeAdView;
+    Yodo1MasNativeAdView nativeAdViewPopUp;
     SliderView sliderView;
     private SliderItem app;
     private Button button;
@@ -167,20 +170,20 @@ public class DetailActivity extends AppCompatActivity implements AppsAdapter.OnC
 
 
         this.frameLayout = (FrameLayout) findViewById(R.id.fl_adplaceholder);
-        this.nativeAdView = (NativeAdView) getLayoutInflater().inflate(R.layout.ad_unified_bold, (ViewGroup) null);
-        ApplicationManager.getInstance().loadAd(this.frameLayout, this.nativeAdView, 1);
+        this.nativeAdView = (Yodo1MasNativeAdView) getLayoutInflater().inflate(R.layout.yodo_native_adview, (ViewGroup) null);
+        ApplicationManager.getInstance().loadNativeYODO(this.frameLayout, this.nativeAdView);
         this.frameLayoutPopUp = (FrameLayout) this.infoPopUp.findViewById(R.id.fl_adplaceholder);
-        this.nativeAdViewPopUp = (NativeAdView) getLayoutInflater().inflate(R.layout.ad_unified, (ViewGroup) null);
-        ApplicationManager.getInstance().loadMainNative(this.frameLayoutPopUp, this.nativeAdViewPopUp, 0);
-        ApplicationManager.getInstance().loadAd(this.frameLayout, this.nativeAdView, 1);
-        ApplicationManager.getInstance().loadMainNative(this.frameLayoutPopUp, this.nativeAdViewPopUp, 0);
+        this.nativeAdViewPopUp = (Yodo1MasNativeAdView) getLayoutInflater().inflate(R.layout.yodo_native_adview, (ViewGroup) null);
+        ApplicationManager.getInstance().loadNativeYODO(this.frameLayoutPopUp, this.nativeAdViewPopUp);
+        ApplicationManager.getInstance().loadNativeYODO(this.frameLayout, this.nativeAdView);
+        ApplicationManager.getInstance().loadNativeYODO(this.frameLayoutPopUp, this.nativeAdViewPopUp);
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
-        ApplicationManager.getInstance().loadAd(this.frameLayout, this.nativeAdView, 1);
-        ApplicationManager.getInstance().loadMainNative(this.frameLayoutPopUp, this.nativeAdViewPopUp, 0);
+        ApplicationManager.getInstance().loadNativeYODO(this.frameLayout, this.nativeAdView);
+        ApplicationManager.getInstance().loadNativeYODO(this.frameLayoutPopUp, this.nativeAdViewPopUp);
 
     }
 
@@ -232,70 +235,9 @@ public class DetailActivity extends AppCompatActivity implements AppsAdapter.OnC
     }
 
     public void getMap() {
-        String string;
-        String string2;
-        String string3;
-        String loadJSONFromAsset = loadJSONFromAsset();
-        try {
-            JSONArray jSONArray = new JSONObject(loadJSONFromAsset).getJSONArray("items");
-            for (int i = 0; i < jSONArray.length(); i++) {
-                JSONObject jSONObject = jSONArray.getJSONObject(i);
-                int i2 = jSONObject.getInt("id");
-                if (i2 == this.map_id) {
-                    if (this.lang != "ru") {
-                        string2 = jSONObject.getString("name_en");
-                        string3 = jSONObject.getString("description_en");
-                    } else {
-                        string2 = jSONObject.getString(AppMeasurementSdk.ConditionalUserProperty.NAME);
-                        string3 = jSONObject.getString("description");
-                    }
-                    String str = string2;
-                    String str2 = string3;
-                    String string4 = jSONObject.getString("views");
-                    String string5 = jSONObject.getString("archive");
-                    String string6 = jSONObject.getString("image");
-                    float parseFloat = Float.parseFloat(jSONObject.getString("rating"));
-                    String string7 = jSONObject.getString("version");
-                    String string8 = jSONObject.getString("downloads");
-                    String string9 = jSONObject.getString("rating");
-                    String string10 = jSONObject.getString("type");
-                    this.map = new Map(i2, str, str2, string5, string6, getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + File.separator + string5.substring(string5.lastIndexOf(47) + 1), string4, parseFloat, string7, string8, string9, string10, 0, 0);
-                    JSONArray jSONArray2 = jSONObject.getJSONArray("gallery");
-                    for (int i3 = 0; i3 < jSONArray2.length(); i3++) {
-                        SliderItem sliderItem = new SliderItem();
-                        sliderItem.setImageUrl(jSONArray2.getString(i3));
-                        this.sliderItemList.add(sliderItem);
-                    }
-                    if (jSONArray2.length() == 0) {
-                        SliderItem sliderItem2 = new SliderItem();
-                        sliderItem2.setImageUrl(string6);
-                        this.sliderItemList.add(sliderItem2);
-                    }
-                    this.GalleryAdapter.notifyDataSetChanged();
-                }
-            }
-            JSONArray jSONArray3 = new JSONObject(loadJSONFromAsset).getJSONArray("related_apps");
-            for (int i4 = 0; i4 < jSONArray3.length(); i4++) {
-                JSONObject jSONObject2 = jSONArray3.getJSONObject(i4);
-                if (this.lang != "ru") {
-                    string = jSONObject2.getString("name_en");
-                } else {
-                    string = jSONObject2.getString(AppMeasurementSdk.ConditionalUserProperty.NAME);
-                }
-                String string11 = jSONObject2.getString("image");
-                String string12 = jSONObject2.getString(ImagesContract.URL);
-                String string13 = jSONObject2.getString("id");
-                SliderItem sliderItem3 = new SliderItem();
-                sliderItem3.setDescription(string);
-                sliderItem3.setImageUrl(string11);
-                sliderItem3.setUrl(string12);
-                sliderItem3.setId(string13);
-                this.appList.add(sliderItem3);
-                this.adapter.notifyDataSetChanged();
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+
+        this.map = (Map) Stash.getObject("ITEM", Map.class);
+
         this.name.setText(this.map.getName());
         this.views.setText(this.map.getViews());
         this.downloads.setText(this.map.getDownloads());
@@ -327,8 +269,8 @@ public class DetailActivity extends AppCompatActivity implements AppsAdapter.OnC
     @Override
     public void onStop() {
         super.onStop();
-        ApplicationManager.getInstance().changeMainAd(0);
-        ApplicationManager.getInstance().changeAd(1);
+//        ApplicationManager.getInstance().changeMainAd(0);
+//        ApplicationManager.getInstance().changeAd(1);
     }
     public String loadJSONFromAsset() {
         try {

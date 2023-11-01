@@ -16,6 +16,7 @@ import androidx.core.content.FileProvider;
 
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.nativead.NativeAdView;
+import com.yodo1.mas.nativeads.Yodo1MasNativeAdView;
 
 import org.json.JSONException;
 
@@ -26,7 +27,7 @@ public class FinalActivity extends AppCompatActivity {
     public String archive_name;
     public InterstitialAd mInterstitialAd;
     FrameLayout frameLayout;
-    NativeAdView nativeAdView;
+    Yodo1MasNativeAdView nativeAdView;
 
     @Override
     public void onCreate(Bundle bundle) {
@@ -36,16 +37,16 @@ public class FinalActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         this.archive_name = getIntent().getExtras().getString("archive_name");
         this.frameLayout = (FrameLayout) findViewById(R.id.fl_adplaceholder);
-        this.nativeAdView = (NativeAdView) getLayoutInflater().inflate(R.layout.ad_unified_bold, (ViewGroup) null);
-        ApplicationManager.getInstance().loadAd(this.frameLayout, this.nativeAdView, 3);
-        this.mInterstitialAd = ApplicationManager.getInstance().getInterAd();
+        this.nativeAdView = (Yodo1MasNativeAdView) getLayoutInflater().inflate(R.layout.yodo_native_adview, (ViewGroup) null);
+        ApplicationManager.getInstance().loadNativeYODO(this.frameLayout, this.nativeAdView);
+//        this.mInterstitialAd = ApplicationManager.getInstance().getInterAd();
 
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
-        ApplicationManager.getInstance().loadAd(this.frameLayout, this.nativeAdView, 3);
+        ApplicationManager.getInstance().loadNativeYODO(this.frameLayout, this.nativeAdView);
     }
 
     public void onButtonClick(View view) {
@@ -86,6 +87,6 @@ public class FinalActivity extends AppCompatActivity {
     @Override
     public void onStop() {
         super.onStop();
-        ApplicationManager.getInstance().changeAd(3);
+//        ApplicationManager.getInstance().changeAd(3);
     }
 }

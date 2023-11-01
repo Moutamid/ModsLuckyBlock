@@ -42,7 +42,8 @@ public class SplashActivity extends AppCompatActivity{
         DilatingDotsProgressBar dilatingDotsProgressBar = (DilatingDotsProgressBar) findViewById(R.id.progress);
         this.mDilatingDotsProgressBar = dilatingDotsProgressBar;
         dilatingDotsProgressBar.showNow();
-        AdLoader build = this.builder.forNativeAd(new NativeAd.OnNativeAdLoadedListener() { 
+        SplashActivity.this.createTimer(3L);
+       /* AdLoader build = this.builder.forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
             @Override 
             public void onNativeAdLoaded(NativeAd nativeAd) {
                 SplashActivity.this.adList.add(nativeAd);
@@ -60,7 +61,7 @@ public class SplashActivity extends AppCompatActivity{
             }
         }).build();
         this.adLoader = build;
-        build.loadAds(new AdRequest.Builder().build(), 4);
+        build.loadAds(new AdRequest.Builder().build(), 4);*/
     }
 
     public void createTimer(long j) {

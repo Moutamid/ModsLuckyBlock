@@ -17,6 +17,7 @@ import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.OnLifecycleEvent;
 import androidx.lifecycle.ProcessLifecycleOwner;
 import com.bumptech.glide.load.Key;
+import com.fxn.stash.Stash;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdLoader;
@@ -34,6 +35,7 @@ import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.android.gms.ads.nativead.NativeAdView;
 import com.yodo1.mas.Yodo1Mas;
 import com.yodo1.mas.error.Yodo1MasError;
+import com.yodo1.mas.nativeads.Yodo1MasNativeAdView;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -73,13 +75,15 @@ public class ApplicationManager extends android.app.Application implements Lifec
     public void onCreate() {
         super.onCreate();
         mInstance = this;
+        Stash.init(this);
         MobileAds.initialize(this, new OnInitializationCompleteListener() {
             @Override
             public void onInitializationComplete(InitializationStatus initializationStatus) {
             }
         });
         ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
-        preloadMainNative();
+     //   preloadMainNative();
+
     }
 
 
@@ -131,8 +135,18 @@ public class ApplicationManager extends android.app.Application implements Lifec
         this.builder.build().loadAd(new AdRequest.Builder().build());
     }
 
+    public void  loadNativeYODO(FrameLayout frameLayout, Yodo1MasNativeAdView nativeAdView){
+        if (nativeAd != null) {
+            nativeAdView.loadAd();
+            if (frameLayout != null) {
+                frameLayout.removeAllViews();
+                frameLayout.addView(nativeAdView);
+            }
+        }
+    }
+
     public void loadAd(FrameLayout frameLayout, NativeAdView nativeAdView, Integer num) {
-        if (this.adList.size() <= 0) {
+        if (this.adList.size() == 0) {
             return;
         }
         NativeAd nativeAd = this.adList.get(num.intValue());

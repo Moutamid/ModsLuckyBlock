@@ -30,10 +30,12 @@ import com.coolerfall.download.DownloadRequest;
 import com.coolerfall.download.Logger;
 import com.coolerfall.download.OkHttpDownloader;
 import com.coolerfall.download.Priority;
+import com.fxn.stash.Stash;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.nativead.NativeAdView;
 import com.google.android.gms.measurement.api.AppMeasurementSdk;
+import com.yodo1.mas.nativeads.Yodo1MasNativeAdView;
 
 import java.io.File;
 import java.io.IOException;
@@ -59,8 +61,8 @@ public class DownloadActivity extends AppCompatActivity  {
     public String image_url;
     private AdView mAdView;
     public InterstitialAd mInterstitialAd;
-    NativeAdView nativeAdView;
-    NativeAdView nativeAdViewPopUp;
+    Yodo1MasNativeAdView nativeAdView;
+    Yodo1MasNativeAdView nativeAdViewPopUp;
 
     public Map map;
     public int map_id;
@@ -102,7 +104,7 @@ public class DownloadActivity extends AppCompatActivity  {
         getMap();
         this.name.setText(this.map.getName());
         this.image = (ImageView) findViewById(R.id.image);
-        this.image_url = this.map.getThumbnail();
+        this.image_url = this.map.getImage();
 
 
         Glide.with((FragmentActivity) this).load(this.image_url).thumbnail(Glide.with((FragmentActivity) this).load(Integer.valueOf((int) R.drawable.spinner))).fitCenter().transition(DrawableTransitionOptions.withCrossFade()).into(this.image);
@@ -114,20 +116,20 @@ public class DownloadActivity extends AppCompatActivity  {
         }).build();
         new Random().nextInt(10);
         this.frameLayout = (FrameLayout) findViewById(R.id.fl_adplaceholder);
-        this.nativeAdView = (NativeAdView) getLayoutInflater().inflate(R.layout.ad_unified_bold, (ViewGroup) null);
-        ApplicationManager.getInstance().loadAd(this.frameLayout, this.nativeAdView, 2);
-        this.mInterstitialAd = ApplicationManager.getInstance().getInterAd();
+        this.nativeAdView = (Yodo1MasNativeAdView) getLayoutInflater().inflate(R.layout.yodo_native_adview, (ViewGroup) null);
+        ApplicationManager.getInstance().loadNativeYODO(this.frameLayout, this.nativeAdView);
+//        this.mInterstitialAd = ApplicationManager.getInstance().getInterAd();
         new Random().nextInt(10);
         this.frameLayoutPopUp = (FrameLayout) this.downloadPopUp.findViewById(R.id.fl_adplaceholder);
-        this.nativeAdViewPopUp = (NativeAdView) getLayoutInflater().inflate(R.layout.ad_unified, (ViewGroup) null);
+        this.nativeAdViewPopUp = (Yodo1MasNativeAdView) getLayoutInflater().inflate(R.layout.yodo_native_adview, (ViewGroup) null);
 
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
-        ApplicationManager.getInstance().loadAd(this.frameLayout, this.nativeAdView, 2);
-        ApplicationManager.getInstance().loadMainNative(this.frameLayoutPopUp, this.nativeAdViewPopUp, 1);
+        ApplicationManager.getInstance().loadNativeYODO(this.frameLayout, this.nativeAdView);
+        ApplicationManager.getInstance().loadNativeYODO(this.frameLayoutPopUp, this.nativeAdViewPopUp);
 
     }
 
@@ -136,49 +138,21 @@ public class DownloadActivity extends AppCompatActivity  {
         this.popup_text.setText(R.string.downloading);
         this.popup_btn.setEnabled(false);
         this.popup_btn.setBackground(getResources().getDrawable(R.drawable.btn_border_inactive));
-        this.downloadManager.add(new DownloadRequest.Builder().url(this.map.getUrl()).downloadCallback(new Callback()).retryTime(3).retryInterval(3L, TimeUnit.SECONDS).progressInterval(1L, TimeUnit.SECONDS).priority(Priority.HIGH).allowedNetworkTypes(1).destinationFilePath(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + File.separator + this.map.getUrl().substring(this.map.getUrl().lastIndexOf(47) + 1)).build());
+        this.downloadManager.add(new DownloadRequest.Builder().url(this.map.getArchive()).downloadCallback(new Callback()).retryTime(3).retryInterval(3L, TimeUnit.SECONDS).progressInterval(1L, TimeUnit.SECONDS).priority(Priority.HIGH).allowedNetworkTypes(1).destinationFilePath(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + File.separator + this.map.getArchive().substring(this.map.getArchive().lastIndexOf(47) + 1)).build());
     }
 
     public void onNextButtonClick(View view) {
         if (this.downloadPopUp.isShowing()) {
             this.downloadPopUp.dismiss();
         }
-        String archiveName = this.map.getArchiveName();
+        String archiveName = this.map.getArchive();
         Intent intent = new Intent(this, FinalActivity.class);
         intent.putExtra("archive_name", archiveName);
         startActivity(intent);
     }
 
     public void getMap() {
-        String string;
-        String string2;
-        try {
-            JSONArray jSONArray = new JSONObject(loadJSONFromAsset()).getJSONArray("items");
-            for (int i = 0; i < jSONArray.length(); i++) {
-                JSONObject jSONObject = jSONArray.getJSONObject(i);
-                int i2 = jSONObject.getInt("id");
-                if (i2 == this.map_id) {
-                    if (this.lang != "ru") {
-                        string = jSONObject.getString("name_en");
-                        string2 = jSONObject.getString("description_en");
-                    } else {
-                        string = jSONObject.getString(AppMeasurementSdk.ConditionalUserProperty.NAME);
-                        string2 = jSONObject.getString("description");
-                    }
-                    String string3 = jSONObject.getString("views");
-                    String string4 = jSONObject.getString("archive");
-                    String string5 = jSONObject.getString("image");
-                    float parseFloat = Float.parseFloat(jSONObject.getString("rating"));
-                    String string6 = jSONObject.getString("version");
-                    String string7 = jSONObject.getString("downloads");
-                    String string8 = jSONObject.getString("rating");
-                    String string9 = jSONObject.getString("type");
-                    this.map = new Map(i2, string, string2, string4, string5, getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + File.separator + string4.substring(string4.lastIndexOf(47) + 1), string3, parseFloat, string6, string7, string8, string9, 0, 0);
-                }
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        this.map = (Map) Stash.getObject("ITEM", Map.class);
     }
 
     @Override
@@ -192,8 +166,8 @@ public class DownloadActivity extends AppCompatActivity  {
 
     public void onStop() {
         super.onStop();
-        ApplicationManager.getInstance().changeAd(2);
-        ApplicationManager.getInstance().changeMainAd(1);
+//        ApplicationManager.getInstance().changeAd(2);
+//        ApplicationManager.getInstance().changeMainAd(1);
     }
 
     private class Callback extends DownloadCallback {

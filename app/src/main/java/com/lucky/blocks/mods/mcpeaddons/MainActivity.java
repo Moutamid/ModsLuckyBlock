@@ -1,5 +1,7 @@
 package com.lucky.blocks.mods.mcpeaddons;
 
+import static androidx.core.content.ContentProviderCompat.requireContext;
+
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -38,9 +40,13 @@ import butterknife.ButterKnife;
 import com.addisonelliott.segmentedbutton.SegmentedButtonGroup;
 import com.bumptech.glide.load.Key;
 import com.developer.kalert.KAlertDialog;
+import com.fxn.stash.Stash;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.measurement.api.AppMeasurementSdk;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.marcoscg.ratedialog.RateDialog;
 import com.smarteist.autoimageslider.SliderView;
 import com.yodo1.mas.Yodo1Mas;
@@ -107,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements MapsAdapter.OnCar
         super.onCreate(bundle);
         this.lang = Locale.getDefault().getLanguage();
         setContentView(R.layout.activity_main);
-
+        Constants.checkApp(this);
         ButterKnife.bind(this);
         this.recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         setModLists();
@@ -120,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements MapsAdapter.OnCar
         setDrawer();
         setMaps();
         initRateDialog();
-        this.mInterstitialAd = ApplicationManager.getInstance().getInterAd();
+//        this.mInterstitialAd = ApplicationManager.getInstance().getInterAd();
 //        ApplicationManager.getInstance().LoadIntersttialAd();
 
         loadYodoInter();
@@ -202,6 +208,7 @@ public class MainActivity extends AppCompatActivity implements MapsAdapter.OnCar
         } else if (this.recyclerView.getAdapter().equals(this.fullAdapter)) {
             this.map = this.fullList.get(i);
         }
+        Stash.put("ITEM", this.map);
         Intent intent = new Intent(this, DetailActivity.class);
         intent.putExtra("item_id", this.map.getId());
         startActivity(intent);
@@ -218,60 +225,69 @@ public class MainActivity extends AppCompatActivity implements MapsAdapter.OnCar
         String string;
         String string2;
         String string3;
-        String loadJSONFromAsset = loadJSONFromAsset();
-        try {
-            JSONArray jSONArray = new JSONObject(loadJSONFromAsset).getJSONArray("items");
-            int i = 0;
-            while (true) {
-                str = "id";
-                str2 = loadJSONFromAsset;
-                if (i >= jSONArray.length()) {
-                    break;
-                }
-                JSONObject jSONObject = jSONArray.getJSONObject(i);
-                int i2 = jSONObject.getInt("id");
-                if (this.lang != "ru") {
-                    string3 = jSONObject.getString("name_en");
-                } else {
-                    string3 = jSONObject.getString(AppMeasurementSdk.ConditionalUserProperty.NAME);
-                }
-                this.fullList.add(new Map(i2, string3, jSONObject.getString("description"), jSONObject.getString("archive"), jSONObject.getString("image"), null, jSONObject.getString("views"), Float.parseFloat(jSONObject.getString("rating")), jSONObject.getString("version"), jSONObject.getString("downloads"), jSONObject.getString("rating"), jSONObject.getString("type"), jSONObject.getInt("sort"), jSONObject.getInt("unsort")));
-                i++;
-                loadJSONFromAsset = str2;
-            }
-            JSONArray jSONArray2 = new JSONObject(str2).getJSONArray("guns");
-            int i3 = 0;
-            while (i3 < jSONArray2.length()) {
-                JSONObject jSONObject2 = jSONArray2.getJSONObject(i3);
-                int i4 = jSONObject2.getInt("id");
-                JSONArray jSONArray3 = jSONArray2;
-                if (this.lang != "ru") {
-                    string2 = jSONObject2.getString("name_en");
-                } else {
-                    string2 = jSONObject2.getString(AppMeasurementSdk.ConditionalUserProperty.NAME);
-                }
-                this.mapList.add(new Map(i4, string2, jSONObject2.getString("description"), jSONObject2.getString("archive"), jSONObject2.getString("image"), null, jSONObject2.getString("views"), Float.parseFloat(jSONObject2.getString("rating")), jSONObject2.getString("version"), jSONObject2.getString("downloads"), jSONObject2.getString("rating"), jSONObject2.getString("type"), 0, 0));
-                i3++;
-                jSONArray2 = jSONArray3;
-            }
-            JSONArray jSONArray4 = new JSONObject(str2).getJSONArray("weapons");
-            int i5 = 0;
-            while (i5 < jSONArray4.length()) {
-                JSONObject jSONObject3 = jSONArray4.getJSONObject(i5);
-                int i6 = jSONObject3.getInt(str);
-                String str3 = str;
-                if (this.lang != "ru") {
-                    string = jSONObject3.getString("name_en");
-                } else {
-                    string = jSONObject3.getString(AppMeasurementSdk.ConditionalUserProperty.NAME);
-                }
-                this.modList.add(new Map(i6, string, jSONObject3.getString("description"), jSONObject3.getString("archive"), jSONObject3.getString("image"), null, jSONObject3.getString("views"), Float.parseFloat(jSONObject3.getString("rating")), jSONObject3.getString("version"), jSONObject3.getString("downloads"), jSONObject3.getString("rating"), jSONObject3.getString("type"), 0, 0));
-                i5++;
-                str = str3;
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+
+        Constants.databaseReference().child("mod")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            modList.clear();
+                            for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                Map itemModel = dataSnapshot.getValue(Map.class);
+                                modList.add(itemModel);
+                            }
+                            modsAdapter.notifyDataSetChanged();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+        Constants.databaseReference().child("mix")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            fullList.clear();
+                            for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                Map itemModel = dataSnapshot.getValue(Map.class);
+                                fullList.add(itemModel);
+                            }
+                            fullAdapter.notifyDataSetChanged();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+        Constants.databaseReference().child("map")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            mapList.clear();
+                            for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                Map itemModel = dataSnapshot.getValue(Map.class);
+                                mapList.add(itemModel);
+                            }
+                            mapsAdapter.notifyDataSetChanged();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+
+
         this.recyclerView.setAdapter(this.fullAdapter);
         this.buttonGroup.setVisibility(0);
     }
@@ -279,7 +295,7 @@ public class MainActivity extends AppCompatActivity implements MapsAdapter.OnCar
     @Override
     public void onStop() {
         super.onStop();
-        ApplicationManager.getInstance().changeAd(0);
+//        ApplicationManager.getInstance().changeAd(0);
     }
 
 
@@ -325,7 +341,7 @@ public class MainActivity extends AppCompatActivity implements MapsAdapter.OnCar
                     } catch (ActivityNotFoundException unused) {
                         Toast.makeText(MainActivity.this, getText(R.string.nomail), 0).show();
                     }
-                }  else if (itemId == R.id.nav_mods) {
+                } else if (itemId == R.id.nav_mods) {
                     buttonGroup.setPosition(0, true);
                 } else if (itemId == R.id.nav_maps) {
                     buttonGroup.setPosition(1, true);
@@ -339,6 +355,7 @@ public class MainActivity extends AppCompatActivity implements MapsAdapter.OnCar
             }
         });
     }
+
     private void applyFontToMenuItem(MenuItem menuItem) {
         Typeface createFromAsset = Typeface.createFromAsset(getAssets(), "fonts/exom.otf");
         SpannableString spannableString = new SpannableString(menuItem.getTitle());
@@ -407,7 +424,7 @@ public class MainActivity extends AppCompatActivity implements MapsAdapter.OnCar
 
     public void setModLists() {
         this.mapList = new ArrayList();
-        MapsAdapter mapsAdapter = new MapsAdapter(this,this, this.mapList);
+        MapsAdapter mapsAdapter = new MapsAdapter(this, this, this.mapList);
         this.mapsAdapter = mapsAdapter;
         mapsAdapter.setOnCardClickListener(this);
         this.modList = new ArrayList();
