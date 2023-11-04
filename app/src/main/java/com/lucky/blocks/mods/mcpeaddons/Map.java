@@ -3,7 +3,7 @@ package com.lucky.blocks.mods.mcpeaddons;
 public class Map {
     int app_id, id;
     String archive, description, downloads, image, name;
-    double rating;
+    Rating rating;
     int sort, unSort;
     String type, version;
     int views;
@@ -11,7 +11,7 @@ public class Map {
     public Map() {
     }
 
-    public Map(int app_id, int id, String archive, String description, String downloads, String image, String name, double rating, int sort, int unSort, String type, String version, int views) {
+    public Map(int app_id, int id, String archive, String description, String downloads, String image, String name, Rating rating, int sort, int unSort, String type, String version, int views) {
         this.app_id = app_id;
         this.id = id;
         this.archive = archive;
@@ -83,11 +83,11 @@ public class Map {
         this.name = name;
     }
 
-    public double getRating() {
+    public Rating getRating() {
         return rating;
     }
 
-    public void setRating(double rating) {
+    public void setRating(Rating rating) {
         this.rating = rating;
     }
 

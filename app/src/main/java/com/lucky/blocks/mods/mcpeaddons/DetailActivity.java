@@ -11,6 +11,7 @@ import android.os.Environment;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.style.ImageSpan;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,6 +44,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
@@ -58,7 +60,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 @SuppressWarnings("ALL")
-public class DetailActivity extends AppCompatActivity implements AppsAdapter.OnCardClickListener{
+public class DetailActivity extends AppCompatActivity implements AppsAdapter.OnCardClickListener {
     private static final String[] PERMISSIONS = {"android.permission.WRITE_EXTERNAL_STORAGE"};
     private static final String TAG = "MEOW";
     public TextView description;
@@ -125,9 +127,12 @@ public class DetailActivity extends AppCompatActivity implements AppsAdapter.OnC
         this.rate_popup_btn = (Button) this.ratePopUp.findViewById(R.id.rate_popup_btn);
         RatingBar ratingBar = (RatingBar) this.ratePopUp.findViewById(R.id.ratingBar);
         this.ratingBar = ratingBar;
+        this.ratingBar.setStepSize(1);
         ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar2, float f, boolean z) {
+                Log.d("RATING", "f  = " + f + "\t\t z = " + z);
+                Log.d("RATING", "ratingBar2  = " + ratingBar2.getRating());
             }
         });
         this.map_id = getIntent().getExtras().getInt("item_id");
@@ -201,6 +206,7 @@ public class DetailActivity extends AppCompatActivity implements AppsAdapter.OnC
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         if (menuItem.getItemId() == 16908332) {
+            startActivity(new Intent(DetailActivity.this, MainActivity.class));
             finish();
             return true;
         }
@@ -226,6 +232,20 @@ public class DetailActivity extends AppCompatActivity implements AppsAdapter.OnC
     }
 
     public void onRatePopupButtonClick(View view) {
+        java.util.Map<String, Object> rate = new HashMap<>();
+        if (this.ratingBar.getRating() == 1.0) {
+            rate.put("star1", (this.map.getRating().getStar1() + 1));
+        } else if (this.ratingBar.getRating() == 2.0) {
+            rate.put("star2", (this.map.getRating().getStar2() + 1));
+        } else if (this.ratingBar.getRating() == 3.0) {
+            rate.put("star3", (this.map.getRating().getStar3() + 1));
+        } else if (this.ratingBar.getRating() == 4.0) {
+            rate.put("star4", (this.map.getRating().getStar4() + 1));
+        } else if (this.ratingBar.getRating() == 5.0) {
+            rate.put("star5", (this.map.getRating().getStar5() + 1));
+        }
+        Constants.databaseReference().child(this.map.getType()).child(String.valueOf(this.map.getId())).child("rating")
+                .updateChildren(rate);
         if (this.ratePopUp.isShowing()) {
             this.ratePopUp.dismiss();
         }
@@ -237,14 +257,21 @@ public class DetailActivity extends AppCompatActivity implements AppsAdapter.OnC
     public void getMap() {
 
         this.map = (Map) Stash.getObject("ITEM", Map.class);
+        java.util.Map<String, Object> view = new HashMap<>();
+        view.put("views", (this.map.getViews() + 1));
+        Constants.databaseReference().child(map.getType()).child(String.valueOf(map.getId())).updateChildren(view);
 
         this.name.setText(this.map.getName());
-        this.views.setText(this.map.getViews());
+        this.views.setText(this.map.getViews() + "");
         this.downloads.setText(this.map.getDownloads());
-        if (this.map.getRating() == 0.0f) {
+
+        Rating rate = this.map.getRating();
+        double rating = (rate.getStar1() + rate.getStar2() + rate.getStar3() + rate.getStar4() + rate.getStar5()) / 5;
+
+        if (rating == 0.0f) {
             this.rating.setText(getString(R.string.no_rating));
         } else {
-            this.rating.setText(String.valueOf(this.map.getRating()));
+            this.rating.setText(String.valueOf(rating));
         }
         if (this.map.getVersion().equals("null") || this.map.getVersion().trim().length() == 0) {
             this.version.setText(getString(R.string.no_version));
@@ -272,6 +299,7 @@ public class DetailActivity extends AppCompatActivity implements AppsAdapter.OnC
 //        ApplicationManager.getInstance().changeMainAd(0);
 //        ApplicationManager.getInstance().changeAd(1);
     }
+
     public String loadJSONFromAsset() {
         try {
             InputStream open = getAssets().open("maps.json");

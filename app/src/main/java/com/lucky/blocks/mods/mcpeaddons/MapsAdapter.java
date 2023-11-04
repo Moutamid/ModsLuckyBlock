@@ -73,9 +73,11 @@ public class MapsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             contentViewHolder contentviewholder = (contentViewHolder) viewHolder;
             Map map = this.mapList.get(i);
             contentviewholder.title.setText(map.getName());
-            contentviewholder.views.setText(map.getViews());
+            contentviewholder.views.setText(map.getViews()+"");
             contentviewholder.downloads.setText(map.getDownloads());
-            contentviewholder.rating.setText(map.getRating()+"");
+            Rating rate = map.getRating();
+            double rating = (rate.getStar1() + rate.getStar2() + rate.getStar3() + rate.getStar4() + rate.getStar5()) / 5;
+            contentviewholder.rating.setText(rating+"");
             if (map.getVersion().equals("null") || map.getVersion().trim().length() == 0) {
                 contentviewholder.version.setText(this.mContext.getResources().getString(R.string.no_version));
             } else {
