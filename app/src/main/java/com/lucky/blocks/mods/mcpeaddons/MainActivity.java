@@ -232,12 +232,38 @@ public class MainActivity extends AppCompatActivity implements MapsAdapter.OnCar
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (snapshot.exists()) {
                             modList.clear();
+                            fullList.clear();
                             for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                                 Map itemModel = dataSnapshot.getValue(Map.class);
                                 modList.add(itemModel);
                             }
                             modsAdapter.notifyDataSetChanged();
                         }
+
+                        Constants.databaseReference().child("map")
+                                .addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        if (snapshot.exists()) {
+                                            mapList.clear();
+                                            fullList.clear();
+                                            for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                                Map itemModel = dataSnapshot.getValue(Map.class);
+                                                mapList.add(itemModel);
+                                            }
+                                            mapsAdapter.notifyDataSetChanged();
+                                        }
+                                        fullList.addAll(modList);
+                                        fullList.addAll(mapList);
+                                        fullAdapter.notifyDataSetChanged();
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+                                        Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+
                     }
 
                     @Override
@@ -245,47 +271,6 @@ public class MainActivity extends AppCompatActivity implements MapsAdapter.OnCar
                         Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
-
-        Constants.databaseReference().child("mix")
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.exists()) {
-                            fullList.clear();
-                            for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                                Map itemModel = dataSnapshot.getValue(Map.class);
-                                fullList.add(itemModel);
-                            }
-                            fullAdapter.notifyDataSetChanged();
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-        Constants.databaseReference().child("map")
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.exists()) {
-                            mapList.clear();
-                            for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                                Map itemModel = dataSnapshot.getValue(Map.class);
-                                mapList.add(itemModel);
-                            }
-                            mapsAdapter.notifyDataSetChanged();
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-
 
 
         this.recyclerView.setAdapter(this.fullAdapter);

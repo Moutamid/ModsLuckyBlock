@@ -232,7 +232,7 @@ public class DetailActivity extends AppCompatActivity implements AppsAdapter.OnC
     }
 
     public void onRatePopupButtonClick(View view) {
-        java.util.Map<String, Object> rate = new HashMap<>();
+/*        java.util.Map<String, Object> rate = new HashMap<>();
         if (this.ratingBar.getRating() == 1.0) {
             rate.put("star1", (this.map.getRating().getStar1() + 1));
         } else if (this.ratingBar.getRating() == 2.0) {
@@ -245,7 +245,7 @@ public class DetailActivity extends AppCompatActivity implements AppsAdapter.OnC
             rate.put("star5", (this.map.getRating().getStar5() + 1));
         }
         Constants.databaseReference().child(this.map.getType()).child(String.valueOf(this.map.getId())).child("rating")
-                .updateChildren(rate);
+                .updateChildren(rate);*/
         if (this.ratePopUp.isShowing()) {
             this.ratePopUp.dismiss();
         }
@@ -257,21 +257,20 @@ public class DetailActivity extends AppCompatActivity implements AppsAdapter.OnC
     public void getMap() {
 
         this.map = (Map) Stash.getObject("ITEM", Map.class);
-        java.util.Map<String, Object> view = new HashMap<>();
+/*        java.util.Map<String, Object> view = new HashMap<>();
         view.put("views", (this.map.getViews() + 1));
-        Constants.databaseReference().child(map.getType()).child(String.valueOf(map.getId())).updateChildren(view);
+        Constants.databaseReference().child(map.getType()).child(String.valueOf(map.getId())).updateChildren(view);*/
 
         this.name.setText(this.map.getName());
         this.views.setText(this.map.getViews() + "");
         this.downloads.setText(this.map.getDownloads());
 
-        Rating rate = this.map.getRating();
-        double rating = (rate.getStar1() + rate.getStar2() + rate.getStar3() + rate.getStar4() + rate.getStar5()) / 5;
+        double rating = this.map.getRating();
 
         if (rating == 0.0f) {
             this.rating.setText(getString(R.string.no_rating));
         } else {
-            this.rating.setText(String.valueOf(rating));
+            this.rating.setText(String.valueOf(this.map.getRating()));
         }
         if (this.map.getVersion().equals("null") || this.map.getVersion().trim().length() == 0) {
             this.version.setText(getString(R.string.no_version));
