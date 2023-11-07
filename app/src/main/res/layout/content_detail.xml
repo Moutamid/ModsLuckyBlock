@@ -42,23 +42,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/exo_2_medium" />
-                <com.smarteist.autoimageslider.SliderView
-                    android:id="@+id/imageSlider"
+
+                <ImageView
+                    android:id="@+id/banner"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    app:sliderAnimationDuration="600"
-                    app:sliderAutoCycleDirection="back_and_forth"
-                    app:sliderAutoCycleEnabled="true"
-                    app:sliderIndicatorAnimationDuration="600"
-                    app:sliderIndicatorGravity="bottom|center_horizontal"
-                    app:sliderIndicatorMargin="15dp"
-                    app:sliderIndicatorOrientation="horizontal"
-                    app:sliderIndicatorPadding="3dp"
-                    app:sliderIndicatorRadius="2dp"
-                    app:sliderIndicatorSelectedColor="#5a5a5a"
-                    app:sliderIndicatorUnselectedColor="#fff"
-                    app:sliderScrollTimeInSec="1"
-                    app:sliderStartAutoCycle="true" />
+                    android:layout_height="200dp" />
+
                 <LinearLayout
                     android:gravity="center_vertical"
                     android:orientation="horizontal"

@@ -48,7 +48,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.marcoscg.ratedialog.RateDialog;
-import com.smarteist.autoimageslider.SliderView;
 import com.yodo1.mas.Yodo1Mas;
 import com.yodo1.mas.error.Yodo1MasError;
 import com.yodo1.mas.event.Yodo1MasAdEvent;
@@ -85,7 +84,6 @@ public class MainActivity extends AppCompatActivity implements MapsAdapter.OnCar
     NavigationView mNavigationView;
     RateDialog rateDialog;
     SearchView searchView;
-    SliderView sliderView;
     private MapsAdapter fullAdapter;
     private List<Map> fullList;
     private DrawerLayout mDrawerLayout;

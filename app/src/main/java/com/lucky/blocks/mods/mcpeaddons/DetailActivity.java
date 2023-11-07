@@ -27,6 +27,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.Key;
 import com.coolerfall.download.DownloadManager;
 import com.fxn.stash.Stash;
@@ -35,9 +36,6 @@ import com.google.android.gms.ads.nativead.NativeAdView;
 import com.google.android.gms.common.internal.ImagesContract;
 import com.google.android.gms.measurement.api.AppMeasurementSdk;
 import com.kobakei.ratethisapp.RateThisApp;
-import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType;
-import com.smarteist.autoimageslider.SliderAnimations;
-import com.smarteist.autoimageslider.SliderView;
 import com.yodo1.mas.nativeads.Yodo1MasNativeAdView;
 
 import java.io.File;
@@ -69,7 +67,7 @@ public class DetailActivity extends AppCompatActivity implements AppsAdapter.OnC
     public int map_id;
     public TextView name;
     public TextView rating;
-    public ImageView thumbnail;
+    public ImageView thumbnail, banner;
     public TextView version;
     public TextView views;
     ImageView closeButton;
@@ -79,7 +77,6 @@ public class DetailActivity extends AppCompatActivity implements AppsAdapter.OnC
     TextView mapName;
     Yodo1MasNativeAdView nativeAdView;
     Yodo1MasNativeAdView nativeAdViewPopUp;
-    SliderView sliderView;
     private SliderItem app;
     private Button button;
     private DownloadManager downloadManager;
@@ -95,7 +92,6 @@ public class DetailActivity extends AppCompatActivity implements AppsAdapter.OnC
     private List<SliderItem> appList = new ArrayList();
     private AppsAdapter adapter = new AppsAdapter(this, this.appList);
     private List<SliderItem> sliderItemList = new ArrayList();
-    private GalleryAdapter GalleryAdapter = new GalleryAdapter(this, this.sliderItemList);
 
     @Override
     public void onCreate(Bundle bundle) {
@@ -110,6 +106,7 @@ public class DetailActivity extends AppCompatActivity implements AppsAdapter.OnC
         this.rating = (TextView) findViewById(R.id.rating);
         this.version = (TextView) findViewById(R.id.version);
         this.thumbnail = (ImageView) findViewById(R.id.thumbnail);
+        this.banner = (ImageView) findViewById(R.id.banner);
         this.button = (Button) findViewById(R.id.button);
         this.recommend_layout = (LinearLayout) findViewById(R.id.recommend_layout);
         this.closeButton = (ImageView) findViewById(R.id.popup_close);
@@ -149,16 +146,9 @@ public class DetailActivity extends AppCompatActivity implements AppsAdapter.OnC
         this.recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         this.recyclerView.setLayoutManager(new LinearLayoutManager(this, 0, false));
         this.adapter.setOnCardClickListener(this);
-        SliderView sliderView = (SliderView) findViewById(R.id.imageSlider);
-        this.sliderView = sliderView;
-        sliderView.setIndicatorAnimation(IndicatorAnimationType.WORM);
-        this.sliderView.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION);
-        this.sliderView.setAutoCycleDirection(2);
-        this.sliderView.setIndicatorSelectedColor(-1);
-        this.sliderView.setIndicatorUnselectedColor(-7829368);
-        this.sliderView.setScrollTimeInSec(3);
-        this.sliderView.setAutoCycle(true);
-        this.sliderView.startAutoCycle();
+
+
+
         getMap();
         TextView textView = (TextView) this.infoPopUp.findViewById(R.id.map_name);
         this.mapName = textView;
@@ -264,6 +254,7 @@ public class DetailActivity extends AppCompatActivity implements AppsAdapter.OnC
         this.name.setText(this.map.getName());
         this.views.setText(this.map.getViews() + "");
         this.downloads.setText(this.map.getDownloads());
+        Glide.with(this).load(this.map.getImage()).into(this.banner);
 
         double rating = this.map.getRating();
 
@@ -283,7 +274,6 @@ public class DetailActivity extends AppCompatActivity implements AppsAdapter.OnC
             this.description.setText(Html.fromHtml(this.map.getDescription()));
         }
         this.recyclerView.setAdapter(this.adapter);
-        this.sliderView.setSliderAdapter(this.GalleryAdapter);
     }
 
     public void onCloseClick(View view) {
