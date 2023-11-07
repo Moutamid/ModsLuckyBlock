@@ -1,12 +1,12 @@
 package com.lucky.blocks.mods.mcpeaddons;
 
 public class Map {
-    int app_id, id;
-    String archive, description, downloads, image, name;
-    double rating;
-    int sort, unSort;
-    String type, version;
-    int views;
+    public int app_id, id;
+    public String archive, description, downloads, image, name;
+    public double rating;
+    public int sort, unSort;
+    public String type, version;
+    public int views;
 
     public Map() {
     }
